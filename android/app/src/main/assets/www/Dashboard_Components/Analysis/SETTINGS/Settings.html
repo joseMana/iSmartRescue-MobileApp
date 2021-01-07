@@ -1,0 +1,764 @@
+﻿<!DOCTYPE html>
+<html style="background-color:white;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>One Admin</title>
+    <meta name="author" content="themsflat.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="../../../Main_Components/bootstrap4-alpha3.min.css">
+    <link rel="stylesheet" type="text/css" href="../../../Main_Components/icon.css">
+    <link rel="stylesheet" type="text/css" href="../../../Main_Components/style.css">
+    <link href="../../../Main_Components/fullcalendar.min.css" rel="stylesheet">
+    <link href="../../../Main_Components/fullcalendar.print.min.css" rel="stylesheet" media="print">
+    <link rel="stylesheet" type="text/css" href="../../../Main_Components/responsive.css">
+    <script src="../../../Main_Components/jquery.min.js"></script>
+
+    <!--<link href="http://corpthemes.com/html/oneadmin/images/icon/favicon.png" rel="shortcut icon">-->
+    <!--SQLlite Scripts Start-->
+    <script src="../../../SQL/lib/codemirror.js"></script>
+    <script src="../../../SQL/lib/codemirror_sql.js"></script>
+    <script src="../../../w3Database.js"></script>
+    <script>
+        function load() {
+            w3schoolsWebSQL1.runInitSQLSettings();
+        }
+        window.onload = load;
+    </script>
+    <link rel="stylesheet" href="../../../SQL/w3css/3/w3.css">
+    <link rel="stylesheet" href="../../../SQL/lib/codemirror.css">
+    <!--SQLlite Scripts End-->
+
+    <!--AVATAR DROPDOWN CSS Start-->
+    <style>
+        .avatar-dropdown-menu {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .open .avatar-dropdown-menu-items {
+            display: block;
+            visibility: visible;
+            opacity: 1;
+            transform: scale(1) translate(0, 0);
+        }
+
+        .avatar-dropdown-menu-items {
+            visibility: hidden;
+            transition: all 0.2s;
+            transform: scale(0.8) translate(20px, -30px);
+            opacity: 0;
+            position: absolute;
+            z-index: 3;
+            right: 0;
+            top: calc(100% + 5px);
+            padding: 0;
+            margin: 0;
+            background: white;
+            /*line-height: 45px;*/
+            padding: 8px 0;
+            min-width: 180px;
+            border-radius: 3px;
+            box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+
+            .avatar-dropdown-menu-items a {
+                padding: 0 1rem;
+                display: block;
+                color: #555;
+            }
+
+                .avatar-dropdown-menu-items a:hover {
+                    background: #fafafa;
+                }
+    </style>
+    <!--AVATAR DROPDOWN CSS End-->
+
+    <!--CUSTOM CONFIRM CSS Start-->
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        * {
+            outline: 0;
+        }
+
+        .container {
+            margin: 50px auto 0;
+            width: 250px;
+            text-align: center;
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ebebeb;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px #e0e0e0;
+        }
+
+        .fadeIn {
+            animation: fadeIn .5s;
+        }
+
+        .zoomIn {
+            animation: zoomIn .5s;
+        }
+
+        .zoomOut {
+            animation: zoomOut .5s;
+        }
+
+        @keyframes zoomIn {
+            0% {
+                transform: scale(0);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes zoomOut {
+            0% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .dialog-ovelay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /*background-color: rgba(0, 0, 0, 0.50);*/
+            z-index: 999999;
+        }
+
+            .dialog-ovelay .dialog {
+                width: 100%;
+                margin: 50px auto 0;
+                background-color: #fff;
+                box-shadow: 0 0 20px rgba(0,0,0,.2);
+                border-radius: 3px;
+                overflow: hidden;
+            }
+
+                .dialog-ovelay .dialog header {
+                    padding: 10px 8px;
+                    background-color: #f6f6f7;
+                    border-bottom: 1px solid #e5e5e5;
+                }
+
+                    .dialog-ovelay .dialog header h3 {
+                        font-size: 14px;
+                        margin: 0;
+                        color: #555;
+                        display: inline-block;
+                    }
+
+                    .dialog-ovelay .dialog header .fa-close {
+                        float: right;
+                        color: #c4c5c7;
+                        cursor: pointer;
+                        transition: all .5s ease;
+                        padding: 0 2px;
+                        border-radius: 1px;
+                    }
+
+                        .dialog-ovelay .dialog header .fa-close:hover {
+                            color: #b9b9b9;
+                        }
+
+                        .dialog-ovelay .dialog header .fa-close:active {
+                            box-shadow: 0 0 5px #673AB7;
+                            color: #a2a2a2;
+                        }
+
+                .dialog-ovelay .dialog .dialog-msg {
+                    padding: 12px 10px;
+                }
+
+                    .dialog-ovelay .dialog .dialog-msg p {
+                        margin: 0;
+                        font-size: 15px;
+                        color: #333;
+                    }
+
+                .dialog-ovelay .dialog footer {
+                    border-top: 1px solid #e5e5e5;
+                    padding: 8px 10px;
+                }
+
+                    .dialog-ovelay .dialog footer .controls {
+                        direction: rtl;
+                    }
+
+                        .dialog-ovelay .dialog footer .controls .button {
+                            padding: 5px 15px;
+                            border-radius: 3px;
+                        }
+
+        .button {
+            padding: 8px 15px;
+            font-size: 15px;
+            -webkit-transition: all .5s ease;
+            -moz-transition: all .5s ease;
+            transition: all .5s ease;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .button-default-flat {
+            background-color: rgb(248, 248, 248);
+            border: 1px solid rgba(204, 204, 204, 0.5);
+            color: #5D5D5D;
+        }
+
+            .button-default-flat:hover {
+                background-color: rgb(252, 252, 252);
+                color: #3B3B3B;
+            }
+
+            .button-default-flat:active {
+                background-color: rgb(240, 240, 240);
+            }
+
+        .button-primary-flat {
+            background-color: #673AB7;
+            border: 1px solid #47229B;
+            color: #f5f5f5;
+        }
+
+            .button-primary-flat:hover {
+                background-color: #7E57C2;
+                border-color: #633EB9;
+                color: #fff;
+            }
+
+            .button-primary-flat:active {
+                background-color: #512DA8;
+            }
+    </style>
+    <!--CUSTOM CONFIRM CSS End-->
+
+    <!--AUTOCALCULATE Start-->
+    <script>
+        function autoCalc() {
+            var mortality = document.getElementById("mortality").value;
+
+            if (mortality == "Monthly") { mortality = 30; }
+            else if (mortality == "Weekly") { mortality = 7; }
+            else if (mortality == "Custom") {//do nothing }
+            }
+
+            var variable = document.getElementById("total_budget").value;
+            var daily = Math.round(variable / mortality);
+            var hourly = Math.round(daily / 24);
+
+            document.getElementById("daily_budget").value = daily;
+            document.getElementById("hourly_budget").value = hourly;
+        }
+    </script>
+    <!--AUTOCALCULATE End-->
+    
+
+    <!--MODAL TRIGGERS Start-->
+    <script>
+        function applyChanges() {
+            var total_budget = document.getElementById("total_budget").value;
+            var daily_budget = document.getElementById("daily_budget").value;
+            var hourly_budget = document.getElementById("hourly_budget").value;
+            var mortality = document.getElementById("mortality").value;
+
+            var holder_total_budget = document.getElementById("holder_total_budget").value;
+            var holder_daily_budget = document.getElementById("holder_daily_budget").value;
+            var holder_hourly_budget = document.getElementById("holder_hourly_budget").value;
+            var holder_mortality = document.getElementById("holder_mortality").value;
+
+            if (holder_total_budget == total_budget &&
+                daily_budget == holder_daily_budget &&
+                hourly_budget == holder_hourly_budget &&
+                mortality == holder_mortality) {
+                $('#nochanges').click();
+                return;
+            }
+            $("#apply").click();
+        }
+    </script>
+    
+    <script>
+        function showSuccess() {
+            $("#success").click();
+        }
+    </script>
+
+    <script type="text/javascript">
+        function intendedError() {
+            qwe
+            console.log(intendedError);
+        }
+    </script>
+    <!--MODAL TRIGGERS End-->
+
+</head>
+<body style="margin-top: 25px; background-color: white; font-weight: bolder; font-size: 13px;">
+    <!--MODALS Start-->
+    <button id="apply" class="button button-default-flat link" style="display:none;">MODAL</button>
+    <button id="success" class="button button-default-flat link2" style="display:none;">MODAL</button>
+    <button id="nochanges" class="button button-default-flat link3" style="display:none;">MODAL</button>
+    <!--MODALS End-->
+
+    <!--Holders Start-->
+    <input style="display:none;" id="holder_total_budget" type="text" />
+    <input style="display:none;" id="holder_daily_budget" type="text" />
+    <input style="display:none;" id="holder_hourly_budget" type="text" />
+    <input style="display:none;" id="holder_mortality" type="text" />
+    <!--Holders End-->
+
+
+    <!--SQLlite Forms START-->
+    <div style="display:none;" id='tryitLeaderboard'>
+        <div style="display:none;" id='div-gpt-ad-1428407818244-0'>
+            <!--<script type='text/javascript'>googletag.cmd.push(function () { googletag.display('div-gpt-ad-1428407818244-0'); });</script>-->
+        </div>
+    </div>
+    <div class="w3-container" style="display:none">
+        <div class="w3-row">
+            <div class="w3-col l10">
+                <div style="padding: 15px; padding-bottom: 40px; margin-bottom: 40px; background-color: #1a242f; box-shadow: 0 1px 3px rgba(0,0,0,0.12),  0 1x  2x  rba(0,0,0,0.24);">
+                    <form method="post" target="view" id="tryitform" name="tryitform" onsubmit="validateForm();">
+                        <center>
+                            <input style="margin-bottom:20px;" type="text" id="amountREMOVE" placeholder="Amount" />
+                            <input style="margin-bottom:20px;" type="text" id="categoryREMOVE" placeholder="Category" list="categories" />
+                            <datalist id="categories">
+                                <option value="Food">Meal</option>
+                                <option value="Snacks">Snacks</option>
+                                <option value="Apparels">Apparels</option>
+                                <option value="Home/Estate Expenses">Home/Estate Expenses</option>
+                                <option value="Transportation">Transportation</option>
+                                <option value="Vices">Vices</option>
+                                <option value="Hygiene">Hygiene</option>
+                                <option value="Others">Others</option>
+                            </datalist>
+                            <input style="margin-bottom:20px;" type="text" id="remarksREMOVE" placeholder="Remarks" />
+                        </center>
+                        <textarea style="display:none;" id="textareaCodeSQL" wrap="logical">
+                            INSERT INTO EXPENSES (AMOUNT,CATEGORY,REMARKS,DATE)
+                            SELECT '','','','';
+                        </textarea>
+                        <input type="hidden" name="code" id="code" />
+                        <input type="hidden" id="bt" name="bt" />
+                    </form>
+
+                    <center>
+                        <button class="w3-green w3-btn" type="button" onclick="w3schoolsSQLSubmit();">LOG EXPENSE&raquo;</button>
+                    </center>
+                    <p id="inner"></p>
+                    <!--<div id="resultSQL">
+                        <iframe id="iframeResultSQL" frameborder="0" name="view"></iframe>
+                        <div id="divResultSQL">
+                        </div>
+                    </div>-->
+                </div>
+                <div id="descriptionDIV" style="text-align:center;display:none;">
+                    <div id="nostatementsupport" style="display:none;">
+                        <p>This SQL-Statement is not supported in the WebSQL Database.</p>
+                        <p>The example still works, because it uses a modified version of SQL.</p>
+                    </div>
+                    <div id="nobrowsersupport" style="display:none;">
+                        <p>Your browser does not support WebSQL.</p>
+                        <p>Your are now using a light-version of the Try-SQL Editor, with a read-only Database.</p>
+                        <p>If you switch to a browser with WebSQL support, you can try any SQL statement, and play with the Database as much as you like. The Database can also be restored at any time.</p>
+                    </div>
+                    <div id="yesbrowsersupport">
+                        <p>Our Try-SQL Editor uses WebSQL to demonstrate SQL.</p>
+                        <p>A Database-object is created in your browser, for testing purposes.</p>
+                        <p>You can try any SQL statement, and play with the Database as much as you like. The Database can be restored at any time, simply by clicking the "Restore Database" button.</p>
+                    </div>
+                    <div id="websqlexplain">
+                        <h3 style="font-size:16px;">W3C WebSQL</h3>
+                        <p>WebSQL stores a Database locally, on the user's computer. Each user gets their own Database object.</p>
+                        <h3 style="font-size:16px;">WebSQL Browser Support</h3>
+                        <div style="width:180px;margin:auto;margin-bottom:10px;">
+                            <div class="chromesupport"> </div>
+                            <div class="iesupport"> </div>
+                            <div class="safarisupport"> </div>
+                            <div class="firefoxsupport"> </div>
+                            <div class="operasupport"> </div>
+                            <div style="clear:both;"></div>
+                        </div>
+                        <p>WebSQL is supported in Chrome, Safari, and Opera.</p>
+                        <div id="yesbrowsersupport2">
+                            <p>If you use another browser you will still be able to use our Try SQL Editor, but a different version, using a server-based ASP application, with a read-only Access Database, where users are not allowed to make any changes to the data.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="sSupport" value="" />
+    <!--SQLlite Forms END-->
+
+    <div class="box box-message" style="margin-left: -20px; width: 112%">
+        <div style="margin: 0px auto; width: 325px;" class="container">
+            <div class="content-wrapper">
+                <center>
+                    <div style="width:50%" class="section">
+                        <label for="textures">Mortality</label>
+                        <select id="mortality" style="height: 60px; background-color: transparent; width: 60%; " name="cammode" onchange="autoCalc();">
+                            <option>Monthly</option>
+                            <option>Weekly</option>
+                            <option>Custom</option>
+                        </select>
+                    </div>
+                </center>
+                <br />
+                <center>
+                    <div style="width:50%" class="section">
+                        <label for="cammode">Total Budget</label>
+                        <input id="total_budget" style="height:0px;text-align:center" type="text"
+                               onkeyup="autoCalc();" onblur="    if(this.value == '') { this.value = 0; }" onfocus="    if(this.value == 0) { this.value='' ; } " />
+                    </div>
+                </center>
+                <br />
+                <div class="user-img avatar-dropdown-menu"><!--avatar dropdown js used-->
+                    <div class="img">
+                        <center>
+                            <div style="width:50%" class="section">
+                                <label for="resolution">Daily Budget</label>
+                                <input id="daily_budget" style="height: 0px; text-align: center" type="text" readonly />
+                            </div>
+                        </center>
+                        <div class="avatar-dropdown-menu-items">
+                            <ul>
+                                <li>
+                                    <a>Daily Budget is auto calculated via Total Budget</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="user-img avatar-dropdown-menu"><!--avatar dropdown js used-->
+                    <div class="img">
+                        <center>
+                            <div style="width:50%" class="section">
+                                <label for="resolution">Hourly Budget</label>
+                                <input id="hourly_budget" style="height: 0px; text-align: center" type="text" readonly />
+                            </div>
+                        </center>
+                        <div class="avatar-dropdown-menu-items">
+                            <ul>
+                                <li>
+                                    <a>Hourly Budget is auto calculated via Total Budget</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <center>
+                    <button style=" color: #fff !important; background-color: #4CAF50 !important; " class="w3-red w3-btn" type="button" onclick="applyChanges();">APPLY CHANGES</button>
+                </center>
+            </div>
+        </div>
+    </div>
+   
+    <script type="text/javascript">
+        var session;
+
+        function colorcoding() {
+            window.editor = CodeMirror.fromTextArea(document.getElementById("textareaCodeSQL"), {
+                mode: "text/x-sql",
+                htmlMode: true,
+                lineWrapping: true,
+                smartIndent: false,
+                addModeClass: true
+            });
+            //  window.editor.on("change", function () {window.editor.save();});
+        }
+        colorcoding();
+        var w3schoolsWebSQLOK = !!window.openDatabase;
+        var statementSupport = document.getElementById("sSupport").value;
+        if (w3schoolsWebSQLOK === true && statementSupport === "") {
+            w3schoolsWebSQL1 = new WebSQLInit();
+        }
+        else {
+            var ifr = document.getElementById("iframeResultSQL");
+            var idoc = (ifr.contentWindow || ifr.contentDocument);
+            if (idoc.document) idoc = idoc.document;
+            idoc.write("<div style='margin:10px;font-family:verdana;font-size:12px;'>Click <b>'Run SQL'</b> to execute the SQL statement above.</div>");
+        }
+        function showDescription() {
+            document.getElementById("descriptionDIV").style.display = "block";
+        }
+        function hideDescription() {
+            document.getElementById("descriptionDIV").style.display = "none";
+        }
+        function w3schoolsSQLSubmit() {
+            var txt;
+            if (window.editor) {
+                window.editor.save();
+            }
+            if (w3schoolsWebSQLOK === true && statementSupport === "") {
+                w3schoolsWebSQL1.runSQL();
+            }
+            else {
+                var t = document.getElementById("textareaCodeSQL").value;
+                t = t.replace(/=/gi, "w3equalsign");
+                w3schoolsNoWebSQLSubmit();
+            }
+        }
+        function w3schoolsWriteDBInfo() {
+            var txt;
+            if (w3schoolsWebSQLOK === true && statementSupport === "") {
+                document.getElementById("iframeResultSQL").style.display = "none";
+                document.getElementById("ExpensesOfTheDay").style.display = "block";
+                //document.getElementById("restoreDBBtn").style.display="inline";
+                document.getElementById("nobrowsersupport").style.display = "none";
+                document.getElementById("nostatementsupport").style.display = "none";
+                document.getElementById("yesbrowsersupport").style.display = "block";
+                //w3schoolsWebSQL1.myDatabase();
+            } else {
+                if (w3schoolsWebSQLOK === true && statementSupport === "-1") {
+                    document.getElementById("nostatementsupport").style.display = "block";
+                    document.getElementById("nobrowsersupport").style.display = "none";
+                    document.getElementById("yesbrowsersupport").style.display = "none";
+                    document.getElementById("yesbrowsersupport2").style.display = "none";
+                    document.getElementById("websqlexplain").style.display = "none";
+                    document.getElementById("descriptionDIV").style.display = "block";
+                } else {
+                    document.getElementById("nobrowsersupport").style.display = "block";
+                    document.getElementById("nostatementsupport").style.display = "none";
+                    document.getElementById("yesbrowsersupport").style.display = "none";
+                    document.getElementById("yesbrowsersupport2").style.display = "none";
+                }
+                document.getElementById("divResultSQL").style.display = "none";
+                document.getElementById("iframeResultSQL").style.display = "inline";
+                txt = '';
+                txt = txt + '<table width="100%" class="notranslate">';
+                txt = txt + '<tr><th style="text-align:left;">Tablenames</th><th style="text-align:right;">Records</th></tr>';
+                txt = txt + '<tr><td style="text-align:left;cursor:pointer;text-decoration:underline;" onclick="w3schoolsNoWebSQLSelectStar(\'Customers\')">Customers</td>';
+                txt = txt + '<td style="text-align:right;">91</td>';
+                txt = txt + '</tr><tr><td style="text-align:left;cursor:pointer;text-decoration:underline;" onclick="w3schoolsNoWebSQLSelectStar(\'Categories\')">Categories</td>';
+                txt = txt + '<td style="text-align:right;">8</td>';
+                txt = txt + '</tr><tr><td style="text-align:left;cursor:pointer;text-decoration:underline;" onclick="w3schoolsNoWebSQLSelectStar(\'Employees\')">Employees</td>';
+                txt = txt + '<td style="text-align:right;">10</td></tr>';
+                txt = txt + '<tr><td style="text-align:left;cursor:pointer;text-decoration:underline;" onclick="w3schoolsNoWebSQLSelectStar(\'OrderDetails\')">OrderDetails</td>';
+                txt = txt + '<td style="text-align:right;">518</td></tr>';
+                txt = txt + '<tr><td style="text-align:left;cursor:pointer;text-decoration:underline;" onclick="w3schoolsNoWebSQLSelectStar(\'Orders\')">Orders</td>';
+                txt = txt + '<td style="text-align:right;">196</td></tr>';
+                txt = txt + '<tr><td style="text-align:left;cursor:pointer;text-decoration:underline;" onclick="w3schoolsNoWebSQLSelectStar(\'Products\')">Products</td>';
+                txt = txt + '<td style="text-align:right;">77</td></tr>';
+                txt = txt + '<tr><td style="text-align:left;cursor:pointer;text-decoration:underline;" onclick="w3schoolsNoWebSQLSelectStar(\'Shippers\')">Shippers</td>';
+                txt = txt + '<td style="text-align:right;">3</td></tr>';
+                txt = txt + '<tr><td style="text-align:left;cursor:pointer;text-decoration:underline;" onclick="w3schoolsNoWebSQLSelectStar(\'Suppliers\')">Suppliers</td>';
+                txt = txt + '<td style="text-align:right;">29</td></tr>';
+                txt = txt + '</table>';
+                document.getElementById("yourDB").innerHTML = txt;
+            }
+        }
+
+        function w3schoolsNoWebSQLSelectStar(x) {
+            var sql = "SELECT * FROM " + x + ";";
+            document.getElementById("textareaCodeSQL").value = sql;
+            window.editor.getDoc().setValue(sql);
+            w3schoolsNoWebSQLSubmit();
+        }
+
+        function w3schoolsNoWebSQLSubmit() {
+            var t = document.getElementById("textareaCodeSQL").value;
+            document.getElementById("code").value = t;
+            //document.getElementById("tryitform").action = "https://tryit.w3schools.com/trysql_view.asp?x=" + Math.random();
+            validateForm();
+            document.getElementById("tryitform").submit();
+        }
+
+        function validateForm() {
+            var code = document.getElementById("code").value;
+            if (code.length > 5000) {
+                document.getElementById("code").value = "<h1>Error</h1>";
+            }
+        }
+        
+
+        w3schoolsWriteDBInfo();
+    </script>
+    <script>
+        $(function () {//Apply changes
+            'use strict';
+
+            function Confirm(title, msg, $true, $false, action) {
+
+                var $content = "<div class='dialog-ovelay fadeIn'>" +
+                                "<div class='dialog zoomIn'><header>" +
+                                 " <center><h3 style='font-weight: bolder;color:crimson'> " + title + " </h3></center> " +
+                                 "<i class='fa fa-close'></i>" +
+                             "</header>" +
+                             "<div class='dialog-msg'>" +
+                                 " <center><p> " + msg + " </p></center> " +
+                             "</div>" +
+                             "<footer>" +
+                                 "<div class='controls'>" +
+                                     " <button style='background: crimson  ;color: white;' class='button button-default-flat cancelAction'>" + $true + "</button> " +
+                                     " <button style='background: #4caf50  ;color: white;' class='button button-primary-flat doAction'>" + $false + "</button> " +
+                                 "</div>" +
+                             "</footer>" +
+                          "</div>" +
+                        "</div>";
+
+                $('body').prepend($content);
+
+                $('body').off('click', '.doAction');
+                $('body').on('click', '.doAction', function () {
+                    $(this).parents('.dialog-ovelay').find('.dialog').removeClass('zoomIn').addClass('zoomOut');
+                    $(this).parents('.dialog-ovelay').fadeOut(function () {
+                        $(this).remove();
+                    });
+                    action();
+                });
+
+                $('.cancelAction, .fa-close').click(function () {
+                    $(this).parents('.dialog-ovelay').find('.dialog').removeClass('zoomIn').addClass('zoomOut');
+                    $(this).parents('.dialog-ovelay').fadeOut(function () {
+                        $(this).remove();
+
+                    });
+                });
+
+            }
+
+            $('.link').click(function () {
+                Confirm('ATTENTION', 'Applying Changes WILL DELETE ALL DATA(Expenses,Pie Chart Records)', 'Cancel', 'Apply Changes',
+                    function () {
+                        w3schoolsWebSQL1.runInitSQLApplyChanges();
+                    }
+                );
+            });
+
+        });
+    </script>
+    <script>
+        $(function () {//Success
+            'use strict';
+
+            function Confirm(title, msg, $true, $false, action) {
+
+                var $content = "<div class='dialog-ovelay fadeIn'>" +
+                                "<div class='dialog zoomIn'><header>" +
+                                 " <center><h3 style='font-weight: bolder;color:crimson'> " + title + " </h3></center> " +
+                                 "<i class='fa fa-close'></i>" +
+                             "</header>" +
+                             "<div class='dialog-msg'>" +
+                                 " <center><p> " + msg + " </p></center> " +
+                             "</div>" +
+                             "<footer>" +
+                                 "<div class='controls'>" +
+                                     " <button style='background: #4caf50  ;color: white;' class='button button-primary-flat doAction'>" + $false + "</button> " +
+                                 "</div>" +
+                             "</footer>" +
+                          "</div>" +
+                        "</div>";
+
+                $('body').prepend($content);
+
+                $('body').off('click', '.doAction');
+                $('body').on('click', '.doAction', function () {
+                    $(this).parents('.dialog-ovelay').find('.dialog').removeClass('zoomIn').addClass('zoomOut');
+                    $(this).parents('.dialog-ovelay').fadeOut(function () {
+                        $(this).remove();
+                        action();
+
+                    });
+                });
+            }
+
+            $('.link2').click(function () {
+                Confirm('Sucess', 'Changes applied sucessfully!', 'Continue', 'Continue', function () {
+                    intendedError();
+                }
+                );
+            });
+
+        });
+    </script>
+    <script>
+        $(function () {//No Changes
+            'use strict';
+
+            function Confirm(title, msg, $true, $false, action) {
+
+                var $content = "<div class='dialog-ovelay fadeIn'>" +
+                                "<div class='dialog zoomIn'><header>" +
+                                 " <center><h3 style='font-weight: bolder;color:crimson'> " + title + " </h3></center> " +
+                                 "<i class='fa fa-close'></i>" +
+                             "</header>" +
+                             "<div class='dialog-msg'>" +
+                                 " <center><p> " + msg + " </p></center> " +
+                             "</div>" +
+                             "<footer>" +
+                                 "<div class='controls'>" +
+                                     " <button style='background: #4caf50  ;color: white;' class='button button-primary-flat doAction'>" + $false + "</button> " +
+                                 "</div>" +
+                             "</footer>" +
+                          "</div>" +
+                        "</div>";
+
+                $('body').prepend($content);
+
+                $('body').off('click', '.doAction');
+                $('body').on('click', '.doAction', function () {
+                    $(this).parents('.dialog-ovelay').find('.dialog').removeClass('zoomIn').addClass('zoomOut');
+                    $(this).parents('.dialog-ovelay').fadeOut(function () {
+                        $(this).remove();
+                    });
+                });
+            }
+
+            $('.link3').click(function () {
+                Confirm('ATTENTION', 'No Changes', 'Continue', 'Continue'
+                );
+            });
+
+        });
+    </script>
+    <!--AVATAR OPTIONS Jquery Start-->
+    <script>
+        $(function () {
+            var $dropDownMenu = $(".avatar-dropdown-menu");
+
+            $dropDownMenu.click(function (e) {
+                e.stopPropagation();
+
+                $(document).on("click", menuCloseListener);
+
+                toggleMenu();
+            });
+
+            var toggleMenu = function toggleMenu() {
+                $dropDownMenu.toggleClass("open");
+            };
+
+            var menuCloseListener = function menuCloseListener() {
+                toggleMenu();
+
+                $(document).off("click", menuCloseListener);
+            };
+        });
+    </script>
+    <!--AVATAR OPTIONS Jquery End-->
+</body>
+</html>
